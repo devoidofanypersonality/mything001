@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veku Dazo · 3D Generalist &amp; Character Artist</title>
+<meta name="description" content="Veku Dazo, 3D generalist and character artist. Sculpting, modelling, rigging, simulation, FX and compositing.">
+<meta name="theme-color" content="#0D0D0F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230D0D0F'/%3E%3Cpath d='M16 5 26 11v10L16 27 6 21V11Z M6 11l10 6 10-6M16 17v10' fill='none' stroke='%23D06A94' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Schibsted Grotesk';src:url(fonts/schibsted-grotesk-latin.woff2) format('woff2');font-weight:400 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Fragment Mono';src:url(fonts/fragment-mono-latin.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --ground:#0D0D0F;
+  --raise:#16161A;
+  --raise-2:#1E1E23;
+  --ink:#F2F2F2;
+  --ink-soft:#B9B9C0;
+  --mute:#8E8E96;
+  --rule:#26262C;
+  --accent:#D06A94;
+  --paper:#F4F4F2;
+  --paper-ink:#16161A;
+  --paper-mute:#5E5E66;
+  --sans:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Fragment Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  --gutter:max(16px,3.5vw);
+  --gap:8px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px;background:var(--ground);scrollbar-color:#3A3A42 var(--ground);accent-color:var(--accent);caret-color:var(--accent)}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* Film grain over the whole page */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.11;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 2.2 -.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:var(--accent);color:var(--ground)}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{display:block;max-width:100%}
+.wrap{max-width:1520px;margin:0 auto;padding-inline:var(--gutter)}
+.meta{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ul{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .35s cubic-bezier(.2,.7,.2,1),color .2s}
+.ul:hover{background-size:100% 1px;color:var(--ink)}
+
+/* Header */
+.top{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid transparent;transition:border-color .2s}
+.top.scrolled{border-bottom-color:var(--rule)}
+.top .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:600;font-size:17px;letter-spacing:-.01em}
+.nav{display:flex;align-items:center;gap:4px 28px;font-size:14px;color:var(--ink-soft)}
+.nav a:not(.btn){padding-block:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px;border:1px solid #3A3A42;color:var(--ink);font-size:14px;font-weight:500;transition:background .2s,border-color .2s,color .2s}
+.btn:hover{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+@media (max-width:620px){.nav .opt{display:none}}
+
+/* Intro */
+.intro .wrap{padding-block:40px 32px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 48px}
+.intro h1{margin:0;font-weight:600;font-size:clamp(44px,6vw,96px);line-height:.95;letter-spacing:-.035em}
+.intro h1 span{display:block;color:var(--mute);font-weight:500;font-size:clamp(26px,3.6vw,58px);line-height:1.1;letter-spacing:-.025em;margin-top:.12em;text-wrap:balance}
+.lede{max-width:400px;display:flex;flex-direction:column;gap:12px;color:var(--ink-soft);font-size:15px;padding-bottom:6px}
+.lede p{margin:0}
+.about-body .avail{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.about-body .avail::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink);flex:none}
+
+/* Work grid */
+#work .wrap{padding-bottom:var(--gap)}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:2fr 1fr 1fr;gap:var(--gap)}
+.grid li{min-width:0}
+/* Until a render is dropped into images/, each tile shows a neutral studio backdrop (key light from above, floor shadow) */
+.tile{--kx:50%;position:relative;display:block;height:100%;overflow:hidden;isolation:isolate;background:
+  radial-gradient(110% 85% at var(--kx) 16%,#2A2A30 0%,#18181C 50%,#0F0F12 100%)}
+.t-banshee{--kx:42%}
+.t-asuka{--kx:60%}
+.t-rig{--kx:38%}
+.t-fx{--kx:62%}
+.grid li:not(.lead) .tile{aspect-ratio:5/4}
+.grid .lead{grid-row:span 2}
+.tile::before{content:"";position:absolute;left:12%;right:12%;bottom:16%;height:22%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);z-index:-1}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+@media (hover:hover){.tile:hover img{transform:scale(1.035)}}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:56px 20px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  background:linear-gradient(transparent,rgba(8,8,10,.82))}
+.cap h3{margin:0;font-weight:600;font-size:clamp(17px,1.5vw,22px);line-height:1.2;letter-spacing:-.01em}
+.lead .cap h3{font-size:clamp(22px,2.4vw,34px)}
+.cap .meta{display:block;margin-top:6px;color:#A6A6AE}
+.arrow{flex:none;width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(242,242,242,.28);transition:background .25s,color .25s,border-color .25s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.arrow svg{width:14px;height:14px}
+@media (hover:hover){.tile:hover .arrow{background:var(--ink);border-color:var(--ink);color:var(--ground);transform:translate(2px,-2px)}}
+.tile:focus-visible .arrow{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.tile.more{background:var(--raise);display:flex;flex-direction:column;justify-content:space-between;padding:20px}
+.tile.more::before{display:none}
+.more-title{font-weight:600;font-size:clamp(22px,2.2vw,32px);line-height:1.1;letter-spacing:-.02em;max-width:9ch}
+.more-links{display:flex;flex-direction:column;gap:2px;font-size:15px;color:var(--ink-soft)}
+.more-links a{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--rule)}
+.more-links a:hover{color:var(--ink)}
+.more-links svg{width:12px;height:12px}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr 1fr}
+  .grid .lead{grid-column:span 2;grid-row:auto}
+  .grid .lead .tile{aspect-ratio:16/11}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .grid .lead{grid-column:auto}
+  .grid li .tile,.grid .lead .tile{aspect-ratio:4/5}
+  .grid li .tile.more{aspect-ratio:auto;min-height:220px;gap:32px}
+}
+
+/* Live sculpt band */
+.viewport{position:relative;height:clamp(420px,62vh,680px);overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;
+  background:radial-gradient(60% 70% at 50% 45%,#1C1C21 0%,#111114 60%,#0B0B0D 100%)}
+.viewport:active{cursor:grabbing}
+.viewport canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hud{position:absolute;inset:0;pointer-events:none;padding:20px var(--gutter);display:flex;flex-direction:column;justify-content:space-between}
+.hud-row{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.hud h2{margin:0;font-weight:600;font-size:clamp(20px,2vw,28px);letter-spacing:-.02em;color:var(--ink)}
+.hud .meta{font-variant-numeric:tabular-nums}
+.toggle{pointer-events:auto;cursor:pointer;font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:10px;background:rgba(13,13,15,.7);color:var(--ink);border:1px solid #3A3A42;transition:border-color .2s,background .2s}
+.toggle:hover{border-color:var(--ink)}
+.toggle i{width:8px;height:8px;border:1px solid var(--mute);display:block;transition:background .2s,border-color .2s}
+.toggle[aria-pressed="true"] i{background:var(--accent);border-color:var(--accent)}
+/* Without WebGL: a still frame of the same viewport */
+.fallback{display:none;position:absolute;left:50%;top:50%;height:86%;width:auto;max-width:100%;object-fit:contain;transform:translate(-50%,-50%)}
+.no-gl{background:#26272D}
+.no-gl .fallback{display:block}
+.no-gl .gl-only{display:none!important}
+.no-gl{cursor:default}
+
+/* About */
+.about .wrap{padding-block:112px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:32px 48px;border-bottom:1px solid var(--rule)}
+.about h2,.contact h2{margin:0;font-weight:600;font-size:clamp(20px,2vw,28px);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
+.about-body{display:flex;flex-direction:column;gap:20px;max-width:62ch}
+.about-body p{margin:0;color:var(--ink-soft);font-size:17px}
+.about-body p:first-child{color:var(--ink);font-size:clamp(20px,1.9vw,26px);line-height:1.4;letter-spacing:-.01em}
+.pipeline{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;border-top:1px solid var(--rule)}
+.pipeline li{font-size:14px;color:var(--ink-soft);padding:12px 20px 12px 0;margin-right:20px;border-bottom:1px solid var(--rule)}
+@media (max-width:760px){.about .wrap{grid-template-columns:1fr;padding-block:80px}}
+
+/* Toolkit band (light, like a sponsor wall) */
+.toolkit{background:var(--paper);color:var(--paper-ink)}
+.toolkit ::selection{background:var(--paper-ink);color:var(--paper)}
+.toolkit .wrap{padding-block:112px;display:flex;flex-direction:column;align-items:center;gap:56px;text-align:center}
+.toolkit h2{margin:0;font-weight:600;font-size:clamp(28px,3vw,44px);letter-spacing:-.025em;line-height:1.1}
+.toolkit h2 + p{margin:12px 0 0;color:var(--paper-mute);font-size:15px}
+.tools{display:flex;flex-direction:column;align-items:center;gap:40px;width:100%}
+.tool-row{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:32px 64px}
+.tool{display:flex;align-items:center;gap:14px;font-weight:600;font-size:clamp(18px,1.7vw,24px);letter-spacing:-.015em;white-space:nowrap}
+.tool img{height:clamp(36px,3.2vw,48px);width:auto}
+/* Vendor lockups: --k tunes each mark to one optical height (thin wide caps run smaller, two-line marks larger) */
+.tool.lockup img{height:calc(clamp(38px,3.5vw,52px) * var(--k,1))}
+@media (max-width:560px){
+  .toolkit .wrap{padding-block:80px;gap:40px}
+  .tools{gap:24px}
+  .tool-row{gap:20px 32px}
+}
+
+/* Contact */
+.contact .wrap{padding-block:112px 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:24px 48px}
+.contact-body{display:flex;flex-direction:column;gap:32px;min-width:0}
+.email{font-weight:600;font-size:clamp(30px,5.6vw,88px);line-height:1;letter-spacing:-.035em;overflow-wrap:anywhere;width:fit-content;max-width:100%}
+.email:hover{color:var(--accent)}
+.contact-body p{margin:0;color:var(--ink-soft);font-size:17px}
+.socials{display:flex;flex-wrap:wrap;gap:8px 32px;font-size:15px;color:var(--ink-soft)}
+.socials a{padding-block:6px}
+footer{grid-column:1/-1;margin-top:80px;padding-top:20px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+@media (max-width:760px){.contact .wrap{grid-template-columns:1fr;padding-top:80px}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before{transition:none!important}
+  .tile:hover img{transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+<div class="wrap">
+<a class="brand" href="#top">Veku Dazo</a>
+<nav class="nav" aria-label="Sections">
+<a class="ul opt" href="#work">Work</a>
+<a class="ul opt" href="#about">About</a>
+<a class="ul opt" href="#toolkit">Toolkit</a>
+<a class="btn" href="#contact">Contact</a>
+</nav>
+</div>
+</header>
+
+<main>
+<section class="intro" aria-labelledby="title">
+<div class="wrap">
+<h1 id="title">Veku Dazo<span>3D Generalist &amp; Character Artist</span></h1>
+<div class="lede">
+<p>Sculpting, modelling, rigging, cloth and hair, simulation, lookdev, stylized FX, animation and compositing.</p>
+</div>
+</div>
+</section>
+
+<section id="work" aria-labelledby="work-h">
+<div class="wrap">
+<h2 class="sr" id="work-h">Selected work</h2>
+<ul class="grid">
+<li class="lead">
+<a class="tile t-banshee" href="https://www.behance.net/gallery/218233869/Bio-Punk-Banshee" target="_blank" rel="noopener">
+<img src="images/bio-punk-banshee.jpg" alt="Bio-Punk Banshee, ZBrush sculpt" onerror="this.remove()">
+<div class="cap"><div><h3>Bio-Punk Banshee</h3><span class="meta">Sculpt · ZBrush · 2025</span></div><span class="arrow" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 11 3M5 3h6v6"/></svg></span></div>
+</a>
+</li>
+<li>
+<a class="tile t-asuka" href="https://www.behance.net/gallery/215837855/Asuka-Langley-Soryuu-EVA02" target="_blank" rel="noopener">
+<img src="images/asuka-eva02.jpg" alt="Asuka Langley Soryuu, EVA02 fan art" loading="lazy" onerror="this.remove()">
+<div class="cap"><div><h3>Asuka Langley Soryuu, EVA02</h3><span class="meta">Character · Fan art</span></div><span class="arrow" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 11 3M5 3h6v6"/></svg></span></div>
+</a>
+</li>
+<li>
+<a class="tile t-rig" href="https://www.behance.net/gallery/212587125/Character-Modelling-and-Rigging-iSHTAR" target="_blank" rel="noopener">
+<img src="images/ishtar-model-rig.jpg" alt="Project iSHTAR character model and rig" loading="lazy" onerror="this.remove()">
+<div class="cap"><div><h3>Project iSHTAR</h3><span class="meta">Modelling · Rigging</span></div><span class="arrow" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 11 3M5 3h6v6"/></svg></span></div>
+</a>
+</li>
+<li>
+<a class="tile t-fx" href="https://www.behance.net/gallery/212602157/Stylized-FX-and-Animation-a-part-of-project-ISHTAR" target="_blank" rel="noopener">
+<img src="images/ishtar-fx.jpg" alt="Project iSHTAR stylized FX and animation" loading="lazy" onerror="this.remove()">
+<div class="cap"><div><h3>iSHTAR: FX &amp; Animation</h3><span class="meta">Stylized FX · Animation</span></div><span class="arrow" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 11 3M5 3h6v6"/></svg></span></div>
+</a>
+</li>
+<li>
+<div class="tile more">
+<div class="more-title">More work</div>
+<div class="more-links">
+<a href="https://www.artstation.com/vekudazo" target="_blank" rel="noopener">ArtStation <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 11 11 3M5 3h6v6"/></svg></a>
+<a href="https://www.behance.net/vekudazo" target="_blank" rel="noopener">Behance <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 11 11 3M5 3h6v6"/></svg></a>
+<a href="https://www.instagram.com/vekudazo/" target="_blank" rel="noopener">Instagram <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 11 11 3M5 3h6v6"/></svg></a>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</section>
+
+<section class="viewport" id="vp" aria-label="Live sculpt viewport">
+<canvas id="mesh" aria-hidden="true"></canvas>
+<img class="fallback" src="images/viewport-still.webp" alt="Lain Low Poly: a low-poly character seated on a chair, seen on a CRT-style screen" width="760" height="480" loading="lazy">
+<div class="hud">
+<div class="hud-row">
+<h2>In the viewport</h2>
+<span class="meta">Lain Low Poly</span>
+</div>
+<div class="hud-row">
+<span class="meta gl-only" id="vstats">Loading model…</span>
+<div class="gl-only" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+<span class="meta" aria-hidden="true">Drag to orbit</span>
+<button class="toggle" id="poly" type="button" aria-pressed="false"><i></i>Polyframe</button>
+</div>
+</div>
+</div>
+</section>
+
+<section class="about" id="about" aria-labelledby="about-h">
+<div class="wrap">
+<h2 id="about-h">About</h2>
+<div class="about-body">
+<p>I work across the 3D pipeline. Most of my work is character-focused, built in ZBrush, Blender, Maya and Marvelous Designer.</p>
+<p>I also set up real-time characters for Unity and Unreal, including facial shape keys for face tracking, and write my own Blender addons for sculpting, animation and viewport tools.</p>
+<p class="avail">Looking for interesting projects to join.</p>
+<ul class="pipeline" aria-label="Disciplines">
+<li>Sculpting</li><li>Modelling</li><li>Rigging</li><li>Cloth &amp; hair</li><li>Simulation</li><li>Lookdev</li><li>Stylized FX</li><li>Animation</li><li>Compositing</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="toolkit" id="toolkit" aria-labelledby="toolkit-h">
+<div class="wrap">
+<div>
+<h2 id="toolkit-h">Toolkit</h2>
+<p>Software I use day to day.</p>
+</div>
+<div class="tools">
+<ul class="tool-row">
+<li class="tool"><img src="logos/zbrush.svg" alt="" width="48" height="48" onerror="this.remove()">ZBrush</li>
+<li class="tool lockup" style="--k:1.05"><img src="logos/blender.svg" alt="Blender" width="149" height="40" onerror="this.replaceWith('Blender')"></li>
+<li class="tool lockup" style="--k:1.05"><img src="logos/maya.svg" alt="Autodesk Maya" width="161" height="40" onerror="this.replaceWith('Maya')"></li>
+<li class="tool lockup" style="--k:1.1"><img src="logos/marvelous-designer.png" alt="Marvelous Designer" width="143" height="40" onerror="this.replaceWith('Marvelous Designer')"></li>
+</ul>
+<ul class="tool-row">
+<li class="tool lockup" style="--k:1"><img src="logos/unity.svg" alt="Unity" width="118" height="40" onerror="this.replaceWith('Unity')"></li>
+<li class="tool lockup" style="--k:.72"><img src="logos/unreal-engine.svg" alt="Unreal Engine" width="306" height="40" onerror="this.replaceWith('Unreal Engine')"></li>
+<li class="tool"><img src="logos/substance.svg" alt="" width="44" height="48" onerror="this.remove()">Adobe Substance Suite</li>
+</ul>
+<ul class="tool-row">
+<li class="tool lockup" style="--k:.62"><img src="logos/nuke.svg" alt="Nuke" width="96" height="28" onerror="this.replaceWith('Nuke')"></li>
+<li class="tool"><img src="logos/davinci.svg" alt="" width="48" height="48" onerror="this.remove()">DaVinci</li>
+<li class="tool"><img src="logos/after-effects.svg" alt="" width="48" height="48" onerror="this.remove()">After Effects</li>
+</ul>
+<ul class="tool-row">
+<li class="tool"><img src="logos/photoshop.svg" alt="" width="48" height="48" onerror="this.remove()">Photoshop</li>
+<li class="tool"><img src="logos/illustrator.svg" alt="" width="48" height="48" onerror="this.remove()">Illustrator</li>
+<li class="tool"><img src="logos/indesign.svg" alt="" width="48" height="48" onerror="this.remove()">InDesign</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="contact" id="contact" aria-labelledby="contact-h">
+<div class="wrap">
+<h2 id="contact-h">Contact</h2>
+<div class="contact-body">
+<a class="email" href="mailto:dazoveku@gmail.com">dazoveku@gmail.com</a>
+<div class="socials">
+<a class="ul" href="https://www.artstation.com/vekudazo" target="_blank" rel="noopener">ArtStation</a>
+<a class="ul" href="https://www.behance.net/vekudazo" target="_blank" rel="noopener">Behance</a>
+<a class="ul" href="https://www.instagram.com/vekudazo/" target="_blank" rel="noopener">Instagram</a>
+</div>
+</div>
+<footer><span>© 2026 Veku Dazo</span><a class="ul" href="#top">Back to top</a></footer>
+</div>
+</section>
+</main>
+
+<script>
+// Header rule appears once the page scrolls
+(function(){
+  var top=document.querySelector('.top');
+  function on(){ top.classList.toggle('scrolled',window.scrollY>8); }
+  window.addEventListener('scroll',on,{passive:true}); on();
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+// Live viewport: Lain Low Poly, flat emission character with glow, baked chair, ink lines, CRT screen
+(function(){
+  var frame=document.getElementById('vp'), canvas=document.getElementById('mesh'), polyBtn=document.getElementById('poly'), stats=document.getElementById('vstats');
+  var renderer;
+  try{ if(!window.THREE||!THREE.GLTFLoader) throw 0; renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true}); }
+  catch(e){ frame.classList.add('no-gl'); return; }
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+
+  var BG=new THREE.Color(0x2C2D34), BLACK=new THREE.Color(0x000000), INK=0x0B0B0E;
+  var scene=new THREE.Scene(); scene.background=BG;
+  var camera=new THREE.PerspectiveCamera(28,1,0.01,100);
+  var group=new THREE.Group(); scene.add(group);
+  var wires=[], glowMats=[], dark=new THREE.MeshBasicMaterial({color:0x000000,side:THREE.DoubleSide});
+  var fitRadius=1, fitH=1, fitW=1;
+
+  // Render targets: scene, glow source, and two half-size blur buffers
+  var lin={minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter};
+  var rt=new THREE.WebGLRenderTarget(2,2,lin), glowRT=new THREE.WebGLRenderTarget(2,2,lin);
+  var blurA=new THREE.WebGLRenderTarget(2,2,lin), blurB=new THREE.WebGLRenderTarget(2,2,lin), maskRT=new THREE.WebGLRenderTarget(2,2,lin);
+  var chairs=[], white=new THREE.MeshBasicMaterial({color:0xffffff}), balloon=null, balloonY=0;
+  var quadCam=new THREE.Camera(), quadGeo=new THREE.PlaneGeometry(2,2);
+  var QUAD_VS='varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}';
+  function pass(frag,uniforms){ var s=new THREE.Scene(); var m=new THREE.Mesh(quadGeo,new THREE.ShaderMaterial({uniforms:uniforms,vertexShader:QUAD_VS,fragmentShader:frag,depthTest:false,depthWrite:false})); s.add(m); return s; }
+
+  var blurU={tex:{value:null},dir:{value:new THREE.Vector2(1,0)}};
+  var blurScene=pass([
+    'uniform sampler2D tex;uniform vec2 dir;varying vec2 vUv;',
+    'void main(){vec3 c=texture2D(tex,vUv).rgb*0.2270;',
+    ' c+=texture2D(tex,vUv+dir*1.3846).rgb*0.3162;c+=texture2D(tex,vUv-dir*1.3846).rgb*0.3162;',
+    ' c+=texture2D(tex,vUv+dir*3.2308).rgb*0.0703;c+=texture2D(tex,vUv-dir*3.2308).rgb*0.0703;',
+    ' gl_FragColor=vec4(c,1.0);}'
+  ].join('\n'),blurU);
+
+  var crtU={tDiffuse:{value:rt.texture},tGlow:{value:blurA.texture},tMask:{value:maskRT.texture},res:{value:new THREE.Vector2(2,2)},time:{value:0},flick:{value:reduce?0:1},glow:{value:1.0}};
+  var crtScene=pass([
+    'uniform sampler2D tDiffuse;uniform sampler2D tGlow;uniform sampler2D tMask;uniform vec2 res;uniform float time;uniform float flick;uniform float glow;varying vec2 vUv;',
+    'vec2 curve(vec2 uv){uv=uv*2.0-1.0;vec2 o=abs(uv.yx)/vec2(7.0,5.5);uv+=uv*o*o;return uv*0.5+0.5;}',
+    'float rnd(vec2 c){return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453);}',
+    'void main(){',
+    ' vec2 uv=curve(vUv);',
+    ' if(uv.x<0.0||uv.x>1.0||uv.y<0.0||uv.y>1.0){gl_FragColor=vec4(0.02,0.02,0.025,1.0);return;}',
+    ' float ca=1.6/res.x;',
+    ' vec3 col=vec3(texture2D(tDiffuse,uv+vec2(ca,0.0)).r,texture2D(tDiffuse,uv).g,texture2D(tDiffuse,uv-vec2(ca,0.0)).b);',
+    ' vec3 g=texture2D(tGlow,uv).rgb;',
+    ' g*=1.0-texture2D(tMask,uv).r;',               // keep the glow off the chair
+    ' col=col+g*glow*0.6;',                       // bloom: add the blurred character on top
+    ' float scan=0.9+0.1*sin(uv.y*res.y*2.0944);',
+    ' float m=mod(gl_FragCoord.x,3.0);vec3 mask=vec3(m<1.0?1.06:0.94,m>=1.0&&m<2.0?1.06:0.94,m>=2.0?1.06:0.94);',
+    ' col*=scan*mask*1.06;',
+    ' float v=16.0*uv.x*uv.y*(1.0-uv.x)*(1.0-uv.y);col*=pow(v,0.22);',
+    ' col+=(rnd(uv*res+time)-0.5)*0.035*flick;',
+    ' col*=1.0+flick*0.025*sin(time*55.0);',
+    ' gl_FragColor=vec4(col,1.0);',
+    '}'
+  ].join('\n'),crtU);
+
+  // Ink: inverted-hull outline around each object
+  var hullMat=function(t){ return new THREE.ShaderMaterial({side:THREE.BackSide,uniforms:{thick:{value:t},ink:{value:new THREE.Color(INK)}},
+    vertexShader:'uniform float thick;void main(){vec3 p=position+normal*thick;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}',
+    fragmentShader:'uniform vec3 ink;void main(){gl_FragColor=vec4(ink,1.0);}'}); };
+  var wireMat=new THREE.MeshBasicMaterial({color:INK,wireframe:true,transparent:true,opacity:.5});
+
+  var chairTex=new THREE.TextureLoader().load('models/chair-bake.jpg',wake);
+  chairTex.flipY=false;
+
+  var loader=new THREE.GLTFLoader();
+  loader.load('models/lain.glb',function(gltf){
+    loader.load('models/balloon.glb',function(b){ build(gltf.scene,b.scene); },undefined,function(){ build(gltf.scene,null); });
+  },undefined,function(){ frame.classList.add('no-gl'); });
+
+  function build(root,bal){
+    // The speech balloon was exported in the same world space, so it drops straight into place
+    if(bal){
+      bal.traverse(function(o){ if(o.isMesh) o.userData.balloon=true; });
+      // Pivot at the balloon's centre, turned once so its front faces the starting view, then left alone
+      bal.updateMatrixWorld(true);
+      var bb=new THREE.Box3().setFromObject(bal), bc=bb.getCenter(new THREE.Vector3());
+      // It was exported lying flat, face up: stand it up and turn it toward the starting view
+      var pivot=new THREE.Group(); pivot.position.copy(bc); bal.position.sub(bc);
+      pivot.rotation.set(Math.PI/2,-group.rotation.y,0,'YXZ');
+      pivot.add(bal); root.add(pivot); balloon=pivot;
+    }
+    var head=root.getObjectByName('head_lain_web');
+    if(balloon&&head){
+      root.updateMatrixWorld(true);
+      var hc=new THREE.Box3().setFromObject(head).getCenter(new THREE.Vector3()), pc=balloon.getWorldPosition(new THREE.Vector3());
+      var view=new THREE.Vector3(0,0,1).applyQuaternion(group.quaternion.clone().invert());   // toward the camera, in root space
+      // Keep the lettering upright: sit the balloon up and to the right of her head so the trail hangs toward her,
+      // then tilt only the small remainder (capped so the text stays readable)
+      var up=new THREE.Vector3(0,1,0).projectOnPlane(view).normalize(), right=new THREE.Vector3().crossVectors(up,view).normalize();
+      var hs=new THREE.Box3().setFromObject(head).getSize(new THREE.Vector3()), headR=Math.max(hs.x,hs.y,hs.z)/2;
+      var bw=bb.getSize(new THREE.Vector3()), bH=bw.z, bW=bw.x;
+      balloon.position.copy(hc).addScaledVector(up,headR*0.55+bH*0.55).addScaledVector(right,bW*0.62);
+      var tail=new THREE.Vector3(0,0,1).applyQuaternion(balloon.quaternion).projectOnPlane(view).normalize();   // trail hangs off local +Z
+      var want=hc.clone().sub(balloon.position).projectOnPlane(view).normalize();
+      var ang=Math.atan2(new THREE.Vector3().crossVectors(tail,want).dot(view),tail.dot(want));
+      ang=Math.max(-0.35,Math.min(0.35,ang));
+      balloon.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(view,ang));
+    }
+    var box=new THREE.Box3().setFromObject(root), c=box.getCenter(new THREE.Vector3()), sz=box.getSize(new THREE.Vector3());
+    root.position.sub(c); fitRadius=sz.length()/2; fitH=sz.y; fitW=Math.max(sz.x,sz.z);
+    if(balloon) balloonY=balloon.position.y;
+    var thick=fitRadius*0.006, verts=0, tris=0, meshes=[];
+    root.traverse(function(o){ if(o.isMesh) meshes.push(o); });
+    meshes.forEach(function(o){
+      var src=o.material, isChair=src&&src.name==='chair_baked', mat;
+      if(o.userData.balloon){
+        // Balloon: plain flat fill and ink, no outline hull and no glow
+        o.material=new THREE.MeshBasicMaterial({color:src.color.clone().convertLinearToSRGB(),side:THREE.DoubleSide});
+        // Stack the layers apart so they never z-fight: ink backing behind, white fill, lettering in front
+        if(src.name==='web_balloon_ink') o.position.y-=0.002;
+        if(src.name==='web_balloon_text') o.position.y+=0.003;
+        return;
+      }
+      if(isChair){ mat=new THREE.MeshBasicMaterial({map:chairTex}); o.layers.enable(1); o.layers.enable(2); chairs.push(o); }
+      else{
+        // Plain emission: flat colour (glTF factors are linear, so convert for display) or the texture as-is
+        // Double-sided: the mirrored parts export with inward-facing triangles, which would otherwise be culled
+        mat=new THREE.MeshBasicMaterial({color:src.color.clone().convertLinearToSRGB(),side:THREE.DoubleSide});
+        if(src.map){ mat.map=src.map; mat.map.encoding=THREE.LinearEncoding; mat.color.set(0xffffff); }
+        // Camisole and frock (the Body_Paint materials) sit a touch darker than the skin
+        if(/^web_Body_Paint/.test(src.name)) mat.color.multiplyScalar(0.82);
+        o.layers.enable(1); o.layers.enable(2); glowMats.push(o);
+      }
+      mat.polygonOffset=true; mat.polygonOffsetFactor=1; mat.polygonOffsetUnits=1;
+      o.material=mat;
+      var g=o.geometry; verts+=g.attributes.position.count; tris+=(g.index?g.index.count:g.attributes.position.count)/3;
+      var hm=hullMat(thick);
+      var hull=new THREE.Mesh(g,hm); o.add(hull);
+      var w=new THREE.Mesh(g,wireMat); w.visible=false; o.add(w); wires.push(w);
+    });
+    group.add(root);
+    stats.textContent='Verts '+verts.toLocaleString('en')+' · Tris '+tris.toLocaleString('en');
+    size(); wake();
+  }
+
+  group.rotation.set(0.1,-0.7,0);
+
+  polyBtn.addEventListener('click',function(){
+    var on=!(wires[0]&&wires[0].visible); wires.forEach(function(w){w.visible=on;});
+    polyBtn.setAttribute('aria-pressed',String(on)); wake();
+  });
+
+  function size(){
+    var w=frame.clientWidth,h=frame.clientHeight; if(!w||!h) return;
+    renderer.setSize(w,h,false); camera.aspect=w/h;
+    var pr=renderer.getPixelRatio(), W=Math.round(w*pr), H=Math.round(h*pr);
+    rt.setSize(W,H); glowRT.setSize(W>>1,H>>1); maskRT.setSize(W>>1,H>>1); blurA.setSize(W>>2,H>>2); blurB.setSize(W>>2,H>>2);
+    crtU.res.value.set(W,H);
+    // Fit the model: distance from the vertical field of view, padded, wider on portrait screens
+    var t=Math.tan(camera.fov*Math.PI/360), d=Math.max((fitH/2)/t,(fitW/2)/(t*camera.aspect))*1.32;
+    camera.position.set(0,0,d); camera.near=d/50; camera.far=d*10;
+    camera.updateProjectionMatrix(); wake();
+  }
+  if(window.ResizeObserver){ new ResizeObserver(size).observe(frame); } else { window.addEventListener('resize',size); }
+
+  // Touch drags orbit horizontally only so vertical swipes still scroll the page
+  var drag=false,touch=false,lx=0,ly=0,vx=0,vy=0;
+  frame.addEventListener('pointerdown',function(e){
+    if(e.target.closest('button')) return;
+    drag=true;touch=e.pointerType!=='mouse';lx=e.clientX;ly=e.clientY;frame.setPointerCapture(e.pointerId);wake();
+  });
+  frame.addEventListener('pointermove',function(e){
+    if(!drag) return;
+    vy=(e.clientX-lx)*0.007; vx=touch?0:(e.clientY-ly)*0.007;
+    group.rotation.y+=vy; group.rotation.x=Math.max(-0.9,Math.min(0.9,group.rotation.x+vx)); lx=e.clientX; ly=e.clientY;
+  });
+  function up(){drag=false;}
+  frame.addEventListener('pointerup',up); frame.addEventListener('pointercancel',up);
+
+  function draw(){
+    // 1. Main scene
+    camera.layers.set(0);
+    renderer.setRenderTarget(rt); renderer.render(scene,camera);
+    // 2. Glow source: only the character, on black
+    scene.background=BLACK; camera.layers.set(1);
+    chairs.forEach(function(o){o.userData.m=o.material;o.material=dark;});
+    renderer.setRenderTarget(glowRT); renderer.render(scene,camera);
+    // 2b. Chair mask, so the bloom never lands on the chair
+    camera.layers.set(2); chairs.forEach(function(o){o.material=white;});
+    glowMats.forEach(function(o){o.userData.m=o.material;o.material=dark;});   // she hides the chair behind her
+    renderer.setRenderTarget(maskRT); renderer.render(scene,camera);
+    chairs.forEach(function(o){o.material=o.userData.m;}); glowMats.forEach(function(o){o.material=o.userData.m;});
+    scene.background=BG; camera.layers.set(0);
+    // 3. Blur it twice (horizontal + vertical) at quarter size
+    var src=glowRT;
+    for(var i=0;i<2;i++){
+      blurU.tex.value=src.texture; blurU.dir.value.set(1/blurA.width*(1+i),0); renderer.setRenderTarget(blurB); renderer.render(blurScene,quadCam);
+      blurU.tex.value=blurB.texture; blurU.dir.value.set(0,1/blurA.height*(1+i)); renderer.setRenderTarget(blurA); renderer.render(blurScene,quadCam);
+      src=blurA;
+    }
+    // 4. CRT composite to screen
+    crtU.time.value=performance.now()/1000;
+    renderer.setRenderTarget(null); renderer.render(crtScene,quadCam);
+  }
+
+  // Animate only while on screen; with reduced motion, render on demand
+  var visible=true,running=false;
+  function tick(){
+    if(!drag){ vx*=0.93; vy*=0.93; group.rotation.x=Math.max(-0.9,Math.min(0.9,group.rotation.x+vx)); group.rotation.y+=vy+(reduce?0:0.0022); }
+    // The balloon just floats: a slow bob in place, no turning toward the camera
+    if(balloon&&!reduce) balloon.position.y=balloonY+Math.sin(performance.now()/900)*fitH*0.012;
+    draw();
+    var settling=drag||Math.abs(vx)+Math.abs(vy)>0.0001;
+    if(visible&&(!reduce||settling)){ requestAnimationFrame(tick); } else { running=false; }
+  }
+  function wake(){ if(!running){ running=true; requestAnimationFrame(tick); } }
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(en){ visible=en[0].isIntersecting; if(visible) wake(); }).observe(frame);
+  }
+  size(); wake();
+})();
+</script>
+</body>
+</html>

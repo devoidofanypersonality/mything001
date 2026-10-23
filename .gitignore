@@ -1,0 +1,11 @@
+# Publish only the live site: ignore everything, then allow the site files back in
+/*
+!/index.html
+!/fonts/
+!/logos/
+!/images/
+!/models/
+!/.gitignore
+!/.nojekyll
+# provenance sidecars stay local
+*.json
